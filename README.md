@@ -35,7 +35,7 @@ spec requires for remote kits):
 
 ```console
 sbx run claude \
-  --kit "oci://docker.io/ajeetraina777/jfrog-xray-kit@sha256:df625c4ff86147c561aa17fe162af516279eb1034381d339896b21bac2c79f33" \
+  --kit "oci://docker.io/ajeetraina777/jfrog-xray-kit@sha256:e7cade0b3762a17eb2aedc01ba2ae5be34238815a0d14e97a316240db536fe89" \
   --kit-arg jfrog_host=mycompany.jfrog.io .
 ```
 
@@ -94,11 +94,12 @@ the sentinel and swaps in the real token from the host — the same proxy-inject
 `glab` and `github` kits use. **The real token never enters the sandbox filesystem or process
 memory.**
 
-The network allowlist is exactly two hosts:
+The network allowlist is exactly three hosts:
 
 | Host | Why |
 | --- | --- |
-| `releases.jfrog.io` | Download the pinned `jf` binary at install time (JFrog's own release host) |
+| `releases.jfrog.io` | Entry point for the pinned `jf` binary download at install time |
+| `releases-cdn.jfrog.io` | Redirect target that actually serves the `jf` binary blob (a 302 from the host above) |
 | `<jfrog_host>` | The Xray + Artifactory REST API on your instance, at runtime |
 
 Everything else is denied. If you use image scanning that pulls from a registry, or a self-hosted
