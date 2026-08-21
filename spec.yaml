@@ -48,7 +48,10 @@ permissions:
     allow:
       # jf CLI download, install time, one-shot. JFrog ships the binary from its
       # own Artifactory release host — same trust domain as the platform itself.
+      # releases.jfrog.io 302-redirects the actual binary blob to releases-cdn.jfrog.io,
+      # so BOTH must be allowed or the install curl fails with exit 22 under deny-all.
       - releases.jfrog.io
+      - releases-cdn.jfrog.io
       # Xray + Artifactory REST API, runtime. This is the user's own instance.
       - "${{ kit.args.jfrog_host }}"
 
