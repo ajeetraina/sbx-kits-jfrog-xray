@@ -69,7 +69,7 @@ The kit declares a `jfrog` credential. On first run, `sbx` prompts you to bind i
 ahead of time:
 
 ```console
-sbx secret set jfrog <your-jfrog-access-token>
+sbx secret set <your-jfrog-access-token> --sandbox jfrog
 ```
 
 Generate the token in the JFrog Platform UI (**Administration → User Management → Access Tokens**,
