@@ -15,6 +15,53 @@ exports `JF_URL`/`JF_ACCESS_TOKEN`, and adds a `## JFrog Xray` section to the ag
 describing the available scan commands. It composes onto any base agent (`claude`, `codex`,
 `gemini`, `shell`, …).
 
+## Architecture
+
+The agent and `jf` run inside an isolated microVM. The real access token never enters that
+microVM — the sandbox only holds a `proxy-managed` sentinel, and the `sbx` egress proxy (the trust
+boundary) swaps in the real token, read from the host secret store, only on allow-listed outbound
+requests to your JFrog Platform.
+
+```text
++----------------------------------------------------------------------------+
+|  Sandbox microVM   --   isolated, never sees the real token                |
++----------------------------------------------------------------------------+
+|                                                                            |
+|    Agent   ( claude / codex / gemini ... )                                 |
+|       |                                                                    |
+|       |  runs                                                              |
+|       v                                                                    |
+|    jf  CLI                                                                 |
+|       JF_URL           =  https://<jfrog_host>                             |
+|       JF_ACCESS_TOKEN   =  proxy-managed                                   |
+|                           (sentinel placeholder, not the real token)       |
++----------------------------------------------------------------------------+
+                                       |
+                                       |   HTTPS  |  Authorization: Bearer proxy-managed
+                                       v
++----------------------------------------------------------------------------+
+|  sbx egress proxy   --   trust boundary                                    |
++----------------------------------------------------------------------------+
+|                                                                            |
+|    -  allowlist :  releases.jfrog.io ,  <jfrog_host>   ( deny all else )   |
+|    -  reads the real token from the host secret store  ( host-side only )  |
+|    -  swaps   proxy-managed   ==>   <real token>   on the way out          |
++----------------------------------------------------------------------------+
+                                       |
+                                       |   HTTPS  |  Authorization: Bearer <real token>
+                                       v
++----------------------------------------------------------------------------+
+|  JFrog Platform                                                            |
++----------------------------------------------------------------------------+
+|                                                                            |
+|    Xray          ( vulnerability + license scanning, policy )              |
+|       ^                                                                    |
+|       |  shared package metadata                                           |
+|       v                                                                    |
+|    Artifactory   ( binaries + dependency-graph metadata )                  |
++----------------------------------------------------------------------------+
+```
+
 ## Usage
 
 `jfrog-xray` is a mixin, so it stacks onto a base agent with `--kit`. Your JFrog Platform host is
