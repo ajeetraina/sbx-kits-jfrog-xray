@@ -22,7 +22,7 @@ microVM — the sandbox only holds a `proxy-managed` sentinel, and the `sbx` egr
 boundary) swaps in the real token, read from the host secret store, only on allow-listed outbound
 requests to your JFrog Platform.
 
-![JFrog Xray sbx kit architecture](architecture.svg)
+![JFrog Xray sbx kit architecture](docs/architecture.png)
 
 ## Usage
 
