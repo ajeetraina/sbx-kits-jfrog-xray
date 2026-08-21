@@ -69,8 +69,13 @@ The kit declares a `jfrog` credential. On first run, `sbx` prompts you to bind i
 ahead of time:
 
 ```console
-sbx secret set <your-jfrog-access-token> --sandbox jfrog
+sbx secret set jfrog          # then paste the token at the prompt (kept out of shell history)
 ```
+
+`jfrog` is the **service name** and must come first — `sbx secret set` is `set SERVICE [value]`,
+so `sbx secret set <token> --sandbox jfrog` would wrongly store the token *as a service* scoped to
+a sandbox called `jfrog`. To scope the secret to one sandbox instead of globally, add
+`--sandbox <sandbox-name>` (e.g. `--sandbox claude-sbx-kits-<repo>`).
 
 Generate the token in the JFrog Platform UI (**Administration → User Management → Access Tokens**,
 or a reference/identity token from your profile). It needs **Xray read + scan** scopes. The token
