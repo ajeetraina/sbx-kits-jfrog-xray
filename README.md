@@ -22,45 +22,7 @@ microVM — the sandbox only holds a `proxy-managed` sentinel, and the `sbx` egr
 boundary) swaps in the real token, read from the host secret store, only on allow-listed outbound
 requests to your JFrog Platform.
 
-```text
-+----------------------------------------------------------------------------+
-|  Sandbox microVM   --   isolated, never sees the real token                |
-+----------------------------------------------------------------------------+
-|                                                                            |
-|    Agent   ( claude / codex / gemini ... )                                 |
-|       |                                                                    |
-|       |  runs                                                              |
-|       v                                                                    |
-|    jf  CLI                                                                 |
-|       JF_URL           =  https://<jfrog_host>                             |
-|       JF_ACCESS_TOKEN   =  proxy-managed                                   |
-|                           (sentinel placeholder, not the real token)       |
-+----------------------------------------------------------------------------+
-                                       |
-                                       |   HTTPS  |  Authorization: Bearer proxy-managed
-                                       v
-+----------------------------------------------------------------------------+
-|  sbx egress proxy   --   trust boundary                                    |
-+----------------------------------------------------------------------------+
-|                                                                            |
-|    -  allowlist :  releases.jfrog.io ,  <jfrog_host>   ( deny all else )   |
-|    -  reads the real token from the host secret store  ( host-side only )  |
-|    -  swaps   proxy-managed   ==>   <real token>   on the way out          |
-+----------------------------------------------------------------------------+
-                                       |
-                                       |   HTTPS  |  Authorization: Bearer <real token>
-                                       v
-+----------------------------------------------------------------------------+
-|  JFrog Platform                                                            |
-+----------------------------------------------------------------------------+
-|                                                                            |
-|    Xray          ( vulnerability + license scanning, policy )              |
-|       ^                                                                    |
-|       |  shared package metadata                                           |
-|       v                                                                    |
-|    Artifactory   ( binaries + dependency-graph metadata )                  |
-+----------------------------------------------------------------------------+
-```
+![JFrog Xray sbx kit architecture](architecture.svg)
 
 ## Usage
 
