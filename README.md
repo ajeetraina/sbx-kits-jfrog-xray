@@ -21,26 +21,19 @@ describing the available scan commands. It composes onto any base agent (`claude
 per-user, so it's supplied as a kit argument (`--kit-arg jfrog_host=<host>`) — hostname only, no
 scheme or path (e.g. `mycompany.jfrog.io`).
 
-Published OCI artifact (primary — every kit here publishes automatically):
+From this repo over git (the spec lives at the repo root, so no `dir=` is needed; pin to a
+commit SHA — remote kit refs must be a full 40-character SHA, not a branch or tag):
 
 ```console
 sbx run claude \
-  --kit "docker.io/sbx/jfrog-xray-kit:latest" \
+  --kit "git+https://github.com/ajeetraina/sbx-kits-jfrog-xray.git#ref=<commit-sha>" \
   --kit-arg jfrog_host=mycompany.jfrog.io .
 ```
 
-From this repo over git:
+From a local clone of this repo (run from the repo root):
 
 ```console
-sbx run claude \
-  --kit "git+https://github.com/docker/sbx-kits-contrib.git#dir=jfrog-xray" \
-  --kit-arg jfrog_host=mycompany.jfrog.io .
-```
-
-From a local clone of this repo:
-
-```console
-sbx run claude --kit ./jfrog-xray/ --kit-arg jfrog_host=mycompany.jfrog.io .
+sbx run claude --kit . --kit-arg jfrog_host=mycompany.jfrog.io .
 ```
 
 Then, inside the sandbox:
