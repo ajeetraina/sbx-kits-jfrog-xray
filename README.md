@@ -30,6 +30,15 @@ requests to your JFrog Platform.
 per-user, so it's supplied as a kit argument (`--kit-arg jfrog_host=<host>`) — hostname only, no
 scheme or path (e.g. `mycompany.jfrog.io`).
 
+Published OCI artifact on Docker Hub (referenced by digest — the immutable form the
+spec requires for remote kits):
+
+```console
+sbx run claude \
+  --kit "oci://docker.io/ajeetraina777/jfrog-xray-kit@sha256:df625c4ff86147c561aa17fe162af516279eb1034381d339896b21bac2c79f33" \
+  --kit-arg jfrog_host=mycompany.jfrog.io .
+```
+
 From this repo over git (the spec lives at the repo root, so no `dir=` is needed; pin to a
 commit SHA — remote kit refs must be a full 40-character SHA, not a branch or tag):
 
